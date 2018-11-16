@@ -48,24 +48,9 @@ class ChooserActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
         startActivity(Intent(this, clicked))
     }
 
-    private fun getRequiredPermissions(): Array<String?> {
-        return try {
-            val info = this.packageManager
-                    .getPackageInfo(this.packageName, PackageManager.GET_PERMISSIONS)
-            val ps = info.requestedPermissions
-            if (ps != null && ps.isNotEmpty()) {
-                ps
-            } else {
-                arrayOfNulls(0)
-            }
-        } catch (e: Exception) {
-            arrayOfNulls(0)
-        }
-    }
-
     private fun allPermissionsGranted(): Boolean {
-        for (permission in getRequiredPermissions()) {
-            permission?.let {
+        for (permission in REQUIRED_PERMISSIONS) {
+            permission.let {
                 if (!isPermissionGranted(this, it)) {
                     return false
                 }
@@ -76,8 +61,8 @@ class ChooserActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
 
     private fun getRuntimePermissions() {
         val allNeededPermissions = ArrayList<String>()
-        for (permission in getRequiredPermissions()) {
-            permission?.let {
+        for (permission in REQUIRED_PERMISSIONS) {
+            permission.let {
                 if (!isPermissionGranted(this, it)) {
                     allNeededPermissions.add(permission)
                 }
@@ -130,6 +115,9 @@ class ChooserActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissions
     companion object {
         private const val TAG = "ChooserActivity"
         private const val PERMISSION_REQUESTS = 1
+
+        private val REQUIRED_PERMISSIONS =
+                arrayOf("android.permission.CAMERA","android.permission.WRITE_EXTERNAL_STORAGE")
 
         private val CLASSES =
                 arrayOf<Class<*>>(LivePreviewActivity::class.java, StillImageActivity::class.java)

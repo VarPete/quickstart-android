@@ -38,22 +38,6 @@ class LivePreviewActivity : AppCompatActivity(),
     private var cameraSource: CameraSource? = null
     private var selectedModel = FACE_CONTOUR
 
-    private val requiredPermissions: Array<String?>
-        get() {
-            return try {
-                val info = this.packageManager
-                        .getPackageInfo(this.packageName, PackageManager.GET_PERMISSIONS)
-                val ps = info.requestedPermissions
-                if (ps != null && ps.isNotEmpty()) {
-                    ps
-                } else {
-                    arrayOfNulls(0)
-                }
-            } catch (e: Exception) {
-                arrayOfNulls(0)
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate")
@@ -210,8 +194,8 @@ class LivePreviewActivity : AppCompatActivity(),
     }
 
     private fun allPermissionsGranted(): Boolean {
-        for (permission in requiredPermissions) {
-            permission?.let {
+        for (permission in REQUIRED_PERMISSIONS) {
+            permission.let {
                 if (!isPermissionGranted(this, it)) {
                     return false
                 }
@@ -222,8 +206,8 @@ class LivePreviewActivity : AppCompatActivity(),
 
     private fun getRuntimePermissions() {
         val allNeededPermissions = ArrayList<String>()
-        for (permission in requiredPermissions) {
-            permission?.let {
+        for (permission in REQUIRED_PERMISSIONS) {
+            permission.let {
                 if (!isPermissionGranted(this, it)) {
                     allNeededPermissions.add(it)
                 }
@@ -258,6 +242,8 @@ class LivePreviewActivity : AppCompatActivity(),
         private val CLASSIFICATION_FLOAT = "Classification (float)"
         private const val TAG = "LivePreviewActivity"
         private const val PERMISSION_REQUESTS = 1
+
+        private val REQUIRED_PERMISSIONS = arrayOf("android.permission.CAMERA")
 
         private fun isPermissionGranted(context: Context, permission: String): Boolean {
             if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {

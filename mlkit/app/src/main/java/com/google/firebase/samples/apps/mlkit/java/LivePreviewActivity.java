@@ -63,6 +63,9 @@ public final class LivePreviewActivity extends AppCompatActivity
   private static final String FACE_CONTOUR = "Face Contour";
   private static final String TAG = "LivePreviewActivity";
   private static final int PERMISSION_REQUESTS = 1;
+  private static final String[] REQUIRED_PERMISSIONS = new String[]{
+          "android.permission.CAMERA"
+  };
 
   private CameraSource cameraSource = null;
   private CameraSourcePreview preview;
@@ -235,24 +238,8 @@ public final class LivePreviewActivity extends AppCompatActivity
     }
   }
 
-  private String[] getRequiredPermissions() {
-    try {
-      PackageInfo info =
-          this.getPackageManager()
-              .getPackageInfo(this.getPackageName(), PackageManager.GET_PERMISSIONS);
-      String[] ps = info.requestedPermissions;
-      if (ps != null && ps.length > 0) {
-        return ps;
-      } else {
-        return new String[0];
-      }
-    } catch (Exception e) {
-      return new String[0];
-    }
-  }
-
   private boolean allPermissionsGranted() {
-    for (String permission : getRequiredPermissions()) {
+    for (String permission : REQUIRED_PERMISSIONS) {
       if (!isPermissionGranted(this, permission)) {
         return false;
       }
@@ -262,7 +249,7 @@ public final class LivePreviewActivity extends AppCompatActivity
 
   private void getRuntimePermissions() {
     List<String> allNeededPermissions = new ArrayList<>();
-    for (String permission : getRequiredPermissions()) {
+    for (String permission : REQUIRED_PERMISSIONS) {
       if (!isPermissionGranted(this, permission)) {
         allNeededPermissions.add(permission);
       }
